@@ -8,10 +8,8 @@ import requests
 
 try:
     from pytube import YouTube, Playlist
-    from selenium.webdriver.common.by import By
-    from selenium import webdriver
 except ImportError:
-    os.system('pip install pytube selenium')
+    os.system('pip install pytube')
 
 current_time_str = datetime.datetime.now().strftime('%Y-%m-%d')
 ti = datetime.datetime.strptime(current_time_str, '%Y-%m-%d')
