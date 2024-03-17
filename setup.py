@@ -27,6 +27,7 @@ with open('res\\Music-Data.json') as d:
     list_ = json.load(d)
 
 if not os.path.exists(list_['loc_song']):
+    os.mkdir(list_['loc'])
     os.mkdir(list_['loc_song'])
 
 def Setup():
