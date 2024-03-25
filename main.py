@@ -297,6 +297,7 @@ def add_headers(response):
     return response
 
 
+# Only for Fun/No use
 @app.before_request
 def check():
     if '/api' not in request.path:
@@ -307,6 +308,6 @@ def check():
 
 
 if __name__ == '__main__':
-    # import webbrowser; webbrowser.open('http://localhost:5000/')
+    import webbrowser; webbrowser.open('http://localhost:5000/')
     print('---- Listening on "http://localhost:5000/" Enjoy! ----')
     app.run(host='0.0.0.0', port=5000, debug=True)
