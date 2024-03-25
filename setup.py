@@ -215,12 +215,13 @@ def runShell():
 
             elif get_argument(1) == '-l' and '?list=' in get_argument(2):
                 l = Playlist(get_argument(2))
+                if not l.video_urls:
+                    print('Error: (Private list/No Internet/Empty list) "help" for more.')
+                    continue
                 list_['lists'][l.playlist_id] = {"t": l.title, "l": []}
                 for k in l.video_urls:
                     list_['lists'][l.playlist_id]['l'].append(k.split('v=')[-1])
                     Download().download(k, force=True if get_argument(3) == '-f' else False)
-                if not l.video_urls:
-                    print('Error: Nothing found (/Private list)')
                 save()
             elif get_argument(1) == '-f' and 'v=' in get_argument(2):
                 Download().download(get_argument(2), force=True if get_argument(3) == '-f' else False)
