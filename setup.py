@@ -4,12 +4,17 @@ import os
 import shutil
 import time
 
-import requests
-
 try:
+    import requests
     from pytube import YouTube, Playlist
+    from selenium.webdriver.common.by import By
+    from selenium import webdriver
 except ImportError:
-    os.system('pip install pytube')
+    os.system('pip install pytube selenium requests')
+    import requests
+    from pytube import YouTube, Playlist
+    from selenium.webdriver.common.by import By
+    from selenium import webdriver
 
 current_time_str = datetime.datetime.now().strftime('%Y-%m-%d')
 ti = datetime.datetime.strptime(current_time_str, '%Y-%m-%d')
@@ -29,6 +34,7 @@ with open('res\\Music-Data.json') as d:
 if not os.path.exists(list_['loc_song']):
     os.mkdir(list_['loc'])
     os.mkdir(list_['loc_song'])
+
 
 def Setup():
     print("""
@@ -118,9 +124,11 @@ def runShell():
 
         cmd = get_argument(0)
 
+        if cmd == 'curl':
+            return
 
 
-        if cmd == 'move':
+        elif cmd == 'move':
             target_dir = get_argument(1)
             if not target_dir or not os.path.exists(target_dir) or (target_dir[-1] != '/' and target_dir[-1] != '\\'):
                 print('Error: (Invalid Path/Not ended with backslash) for move --move-dir--')
@@ -281,4 +289,3 @@ Eg: dwd -f -url- [use of single space is not allowed].
 
 if __name__ == '__main__':
     runShell()
-

@@ -2,6 +2,7 @@ import os
 
 if not os.path.exists('res\\Music-data.json'):
     import setup
+
     setup.from_main = True
     setup.Setup()
     setup.runShell()
@@ -11,6 +12,7 @@ import datetime
 import json
 import random
 import time
+import string
 from flask import Flask, jsonify, request, abort, send_from_directory, send_file, make_response, render_template
 
 app = Flask(__name__)
@@ -28,13 +30,19 @@ class SHandler:
                 setup.Setup()
                 setup.runShell()
                 exit()
-        self.this = str(datetime.datetime.now().strftime("%Y%m%d%H"))
+        self.this = self.generate_unique_id()
         if not self.data.get("act"):
             self.data['act'] = {}
         self.data["act"][self.this] = self.data.get('act', {}).get(self.this) or {}
         self.ine = {}
         self.recommend_ = None
+        self.added = []
         self.arrange = None
+
+    @staticmethod
+    def generate_unique_id():
+        random_chars = ''.join(random.choices(string.ascii_letters + string.ascii_letters, k=8))
+        return random_chars
 
     @staticmethod
     def checkValidation(key: str):
@@ -86,14 +94,18 @@ class SHandler:
             [user, len(set(data_.keys()) & our_user)] for user, data_ in filtered_data.items() if user != today
         ]
         most_common.sort(key=lambda x: x[1], reverse=True)
-
         found_songs = {}
         for user, _ in most_common[:30]:
             for song, duration in filtered_data[user].items():
-                if song not in our_user and song not in found_songs:
+                if song not in our_user and song not in found_songs and song not in self.added:
                     found_songs[song] = duration
 
-        self.recommend_ = [song_id for song_id, _ in sorted(found_songs.items(), key=lambda x: x[1], reverse=True)]
+        self.recommend_ = [song_id for song_id, _ in sorted(found_songs.items(), key=lambda x: x[1], reverse=True)][:20]
+        if len(self.recommend_) < 20:
+            for __ in range(20 - len(self.recommend_)):
+                self.recommend_.append(self.arrange[__])
+        random.shuffle(self.recommend_)
+        self.added += self.recommend_
         self.ine[id_] = self.recommend_
         return self.recommend_
 
@@ -118,16 +130,10 @@ def notfound(n):
     return respo(404, '400.html')
 
 
-# @app.route('/api/recommended')
-# def recommended():
-#     rData = ghn.arrange or ghn.rec_()
-#     return jsonify(rData[:30]), 200
-
-
 @app.route('/thumb')
 def thumbnail():
     loc = request.args.get('id')
-    if not loc:
+    if not loc or not ghn.data.get(loc):
         abort(400)
     img = ghn.data[loc]['src']['img']['limg'].split('\\')[-1]
     return send_from_directory("Music\\thumbnails\\", img)
@@ -147,55 +153,23 @@ def list__():
 
 @app.route('/api/views')
 def views():
-    sKeys = set()
-    try:
-        sKeys.add(ghn.arrange[0])
-        rData = {"ls": [{
-            "ur": 'songs?view_id=recommended&play=' + ghn.arrange[0],
-            'tl': ghn.data[ghn.arrange[0]]['t']['c']}],
-            'vd_top': {
-                'ls': []
-            },
-            'vd_lss': {
-                'ls': []
-            },
-            'vd_mid': {
-                'ls': []
-            }}
-    except IndexError:
-        rData = {"ls": [{
-            "ur": None,
-            'tl': None, }],
-            'vd_top': {
-                'ls': []
-            },
-            'vd_lss': {
-                'ls': []
-            },
-            'vd_mid': {
-                'ls': []
-            }}
+    rData = {"ls": [], 'vd_top': {'ls': []}, 'vd_lss': {'ls': []}, 'vd_mid': {'ls': []}}
 
     trf_ = [kjh for kjh in ghn.data.get('act', [])]
     random.shuffle(trf_)
-    sKeys = []
-    sKeys_ = [ghn.arrange[0]]
+    sKeys = [ghn.arrange[0]]
     for ind, ijh in enumerate(trf_):
         rfg = ghn.recommend_songs(True, {'user': ijh})
         if not rfg:
             continue
-        id_ = rfg[ind]
-        for i in range(1, len(rfg)):
-            if id_ in sKeys_ and sKeys_:
-                id_ = rfg[i]
-                continue
-            sKeys_.append(id_)
-            break
+        id_ = rfg[0]
+        if id_ in sKeys:
+            continue
         rfg = ghn.data[id_]
         rData['ls'].append({
-            "ur": 'songs?view_id=' + ijh + '&play=' + id_,
+            "ur": ijh + '?play=' + id_,
             'tl': rfg['t']['c'], })
-        sKeys.append(ijh)
+        sKeys.append(id_)
 
     ghn.ine["recommended"] = sKeys
     sKeys = []
@@ -250,8 +224,6 @@ def view():
     if not hgf:
         abort(400)
     rData = ghn.recommend_songs(True, options={'user': hgf})
-    for jnb in ghn.ine:
-        print(ghn.ine[jnb], 's')
     return jsonify(rData), 200
 
 
@@ -265,7 +237,7 @@ def get_songs():
             if jk not in ['loc', 'act', 'loc_song', 'lists']:
                 dataCopy[jk] = tTemp[jk]
                 list_.append(jk)
-
+    ghn.added = []
     songs = {"files": dataCopy, 'fetched': time.time(), 'playlist': list_}
     return jsonify(songs)
 
@@ -274,7 +246,7 @@ def get_songs():
 def add_opt():
     jk = request.json.get('option')
     typeOFRequest = jk.get('type')
-    if not jk.get('id'):
+    if not ghn.data.get(jk.get('id', '----')):
         abort(400)
     stem = ghn.data[jk.get('id')]
     ui = (stem.get('act')) or {'count': 0, 'd': [], 'dur': 0}
@@ -306,7 +278,7 @@ def add_opt():
 @app.route("/api/audio")
 def stream_audio():
     file = request.args.get('id')
-    if not file:
+    if not file or not ghn.data.get(file):
         abort(400)
     file = ghn.data[file]['src']['lsrc'].split('\\')[-1]
     return send_from_directory("Music\\", file)
@@ -337,4 +309,4 @@ def check():
 if __name__ == '__main__':
     # import webbrowser; webbrowser.open('http://localhost:5000/')
     print('---- Listening on "http://localhost:5000/" Enjoy! ----')
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
