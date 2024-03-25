@@ -44,4 +44,5 @@ Generating Recommendations:
 The program tracks your interactions and activities on the page, storing this information in a file on your local machine. Ensure you do not delete this file or modify it in any way. If you need to change its location, use a specific command. The most crucial aspect of running this script is your JSON file, which contains all your activity and music information. If you lose everything except your JSON file, you can easily redownload everything.
 
 ## About Developer
-View https://rohan-koirala.com.np/ if "intrested" or "want a react src directory" else "Enjoy with 2024's 2nd project."
+View https://rohan-koirala.com.np/ if intrested, Also if you are intrested in src directory of react,
+Contact me on contact@rohan-koirala.com.np
