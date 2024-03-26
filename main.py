@@ -103,7 +103,8 @@ class SHandler:
         self.recommend_ = [song_id for song_id, _ in sorted(found_songs.items(), key=lambda x: x[1], reverse=True)][:20]
         if len(self.recommend_) < 20:
             for __ in range(20 - len(self.recommend_)):
-                self.recommend_.append(self.arrange[__])
+                if len(self.arrange) >= __: break
+                self.recommend_.append(self.arrange[__] if len(self.arrange) < __ else 0)
         random.shuffle(self.recommend_)
         self.added += self.recommend_
         self.ine[id_] = self.recommend_
