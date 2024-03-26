@@ -104,7 +104,7 @@ class SHandler:
         if len(self.recommend_) < 20:
             for __ in range(20 - len(self.recommend_)):
                 if len(self.arrange) >= __: break
-                self.recommend_.append(self.arrange[__] if len(self.arrange) < __ else 0)
+                self.recommend_.append(self.arrange[__])
         random.shuffle(self.recommend_)
         self.added += self.recommend_
         self.ine[id_] = self.recommend_
