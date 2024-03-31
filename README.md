@@ -1,6 +1,19 @@
 # DRK Player
 A combination of react and flask.
 
+#### Home page view.
+![Screenshot (5)](https://github.com/drohankoirala/python-music-player/assets/126786936/3bc23c15-d28a-421f-9ed5-e274391c1e61)
+
+#### Playlists view.
+![Screenshot (6)](https://github.com/drohankoirala/python-music-player/assets/126786936/077478c5-e09c-4d97-bc65-5629f04fb789)
+
+#### Playlist item view.
+![Screenshot (7)](https://github.com/drohankoirala/python-music-player/assets/126786936/05f6fc30-f31b-4441-8554-84b9f665a293)
+
+#### Todays Special view.
+![Screenshot (9)](https://github.com/drohankoirala/python-music-player/assets/126786936/1b28cc99-06f2-46ee-a461-324c856dccb6)
+
+
 ## Steps to run on your local machine.
 1. Downlaod all files:
 2. Run main.py
