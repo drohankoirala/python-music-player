@@ -21,14 +21,14 @@ ti = datetime.datetime.strptime(current_time_str, '%Y-%m-%d')
 from_main = False
 os.system('cls')
 print("""HNPlayer Handler, Version 1.0.1, by drohan""")
-if not os.path.exists('res\\Music-Data.json'):
+if not os.path.exists('res/Music-Data.json'):
     os.system('mkdir res')
-    with open('res\\Music-Data.json', 'w') as d:
-        print("Created \"res\\Music-Data.json\", Reason [json file was deleted/haven't run"
+    with open('res/Music-Data.json', 'w') as d:
+        print("Created \"res/Music-Data.json\", Reason [json file was deleted/haven't run"
               " \"setup.py\" before/json files location was changed]")
         json.dump({'loc': os.getcwd() + '\\Music\\', 'loc_song': os.getcwd() + '\\Music\\thumbnails\\'}, d)
 
-with open('res\\Music-Data.json') as d:
+with open('res/Music-Data.json') as d:
     list_ = json.load(d)
 
 if not os.path.exists(list_['loc_song']):
@@ -53,7 +53,7 @@ Try the command "help" for more details.
 
 
 def save():
-    with open('res\\Music-Data.json', 'w') as ds:
+    with open('res/Music-Data.json', 'w') as ds:
         json.dump(list_, ds)
 
 
