@@ -1,6 +1,6 @@
 import os
 
-if not os.path.exists('res\\Music-data.json'):
+if not os.path.exists('res/Music-data.json'):
     import setup
 
     setup.from_main = True
@@ -22,7 +22,7 @@ list_ = []
 
 class SHandler:
     def __init__(self):
-        with open('res\\Music-data.json') as d:
+        with open('res/Music-data.json') as d:
             self.data = json.load(d)
             if len([_ for _ in self.data.keys()]) <= 3:
                 import setup
@@ -57,7 +57,7 @@ class SHandler:
         return False
 
     def saveMusic(self):
-        with open('res\\Music-data.json', 'w') as df:
+        with open('res/Music-data.json', 'w') as df:
             json.dump(self.data, df)
 
     def rec_(self):
