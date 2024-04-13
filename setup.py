@@ -26,7 +26,7 @@ if not os.path.exists('res/Music-Data.json'):
     with open('res/Music-Data.json', 'w') as d:
         print("Created \"res/Music-Data.json\", Reason [json file was deleted/haven't run"
               " \"setup.py\" before/json files location was changed]")
-        json.dump({'loc': os.getcwd() + '\\Music\\', 'loc_song': os.getcwd() + '\\Music\\thumbnails\\'}, d)
+        json.dump({'loc': os.getcwd() + '/Music/', 'loc_song': os.getcwd() + '/Music/thumbnails/'}, d)
 
 with open('res/Music-Data.json') as d:
     list_ = json.load(d)
